@@ -126,8 +126,8 @@ end
   
 
 ### 3.3 CLIMAX : ###############################################################
-new_beat_chart << if next_beat == DEVELOPMENTS then CLIMAX[1]
-                  else                              CLIMAX[0]
+new_beat_chart << if next_beat == DEVELOPMENTS then CLIMAX[0]
+                  else                              CLIMAX[1]
                   end
 
 
