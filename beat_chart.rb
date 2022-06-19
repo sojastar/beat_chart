@@ -132,7 +132,7 @@ new_beat_chart << if next_beat == DEVELOPMENTS then CLIMAX[1]
 
 
 ### 3.4 RESOLUTION : ###########################################################
-next_beat << RESOLUTIONS.sample
+new_beat_chart << RESOLUTIONS.sample
 
 
 
