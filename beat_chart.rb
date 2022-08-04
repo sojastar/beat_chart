@@ -6,72 +6,72 @@ require 'optparse'
 
 
 ### 1. CONSTANTS : #############################################################
-HOOKS = [ { type: :kidnapped,         best_followed_by: :development },
-          { type: :coronet_blue,      best_followed_by: :cliffhanger },
-          { type: :cliffhanger,       best_followed_by: :development },
-          { type: :development,       best_followed_by: :cliffhanger },
-          { type: :discovery,         best_followed_by: :cliffhanger },
-          { type: :crisis,            best_followed_by: :development },
-          { type: :revelation,        best_followed_by: :cliffhanger },
-          { type: :murder,            best_followed_by: :both },
-          { type: :false_accusation,  best_followed_by: :cliffhanger },
-          { type: :looming_threat,    best_followed_by: :cliffhanger } ]
+HOOKS = [ { type: :kidnapped,        name: 'Kidnapped',         best_followed_by: :development  },
+          { type: :coronet_blue,     name: 'Coronet blue',      best_followed_by: :cliffhanger  },
+          { type: :cliffhanger,      name: 'Cliffhanger',       best_followed_by: :development  },
+          { type: :development,      name: 'Development',       best_followed_by: :cliffhanger  },
+          { type: :discovery,        name: 'Discovery',         best_followed_by: :cliffhanger  },
+          { type: :crisis,           name: 'Crisis',            best_followed_by: :development  },
+          { type: :revelation,       name: 'Revelation',        best_followed_by: :cliffhanger  },
+          { type: :murder,           name: 'Murder',            best_followed_by: :both         },
+          { type: :false_accusation, name: 'False accusation',  best_followed_by: :cliffhanger  },
+          { type: :looming_threat,   name: 'Looming threat',    best_followed_by: :cliffhanger  } ]
 
-CLIFFHANGERS  = [ { type: :chase },
-                  { type: :pursuit },
-                  { type: :race },
-                  { type: :fistfight },
-                  { type: :dogfight },
-                  { type: :confrontation },
-                  { type: :duel },
-                  { type: :battle },
-                  { type: :monster },
-                  { type: :ambush },
-                  { type: :obstacles },
-                  { type: :contest },
-                  { type: :skirmish } ]
+CLIFFHANGERS  = [ { type: :chase,         name: 'Chase'         },
+                  { type: :pursuit,       name: 'Pursuit'       },
+                  { type: :race,          name: 'Race'          },
+                  { type: :fistfight,     name: 'Fistfight'     },
+                  { type: :dogfight,      name: 'Dogfight'      },
+                  { type: :confrontation, name: 'Confrontation' },
+                  { type: :duel,          name: 'Duel'          },
+                  { type: :battle,        name: 'Battle'        },
+                  { type: :monster,       name: 'Monster'       },
+                  { type: :ambush,        name: 'Ambush'        },
+                  { type: :obstacles,     name: 'Obstacles'     },
+                  { type: :contest,       name: 'Contest'       },
+                  { type: :skirmish,      name: 'Skirmish'      } ]
 
-DEVELOPMENTS  = [ { type: :warning },
-                  { type: :hidden_weakness },
-                  { type: :revelation },
-                  { type: :advantage_revealed },
-                  { type: :clue },
-                  { type: :retreat },
-                  { type: :hesitation },
-                  { type: :mistaken_identity },
-                  { type: :villain_s_monologue },
-                  { type: :secret_meeting },
-                  { type: :personal_stake },
-                  { type: :second_chance },
-                  { type: :gain_mastery },
-                  { type: :alliance },
-                  { type: :betrayal },
-                  { type: :sabotage },
-                  { type: :foreshadowing },
-                  { type: :not_what_it_seems },
-                  { type: :strange_bedfellows },
-                  { type: :turnabout },
-                  { type: :romance },
-                  { type: :lie_revealed },
-                  { type: :hazardous_quest },
-                  { type: :puzzle },
-                  { type: :framed },
-                  { type: :obsession },
-                  { type: :back_from_the_dead },
-                  { type: :rescuers },
-                  { type: :vengeance } ]
+DEVELOPMENTS  = [ { type: :warning,             name: 'Warning'               },
+                  { type: :hidden_weakness,     name: 'Hidden weakness'       },
+                  { type: :revelation,          name: 'Revelation'            },
+                  { type: :advantage_revealed,  name: 'Advantage revealed'    },
+                  { type: :clue,                name: 'Clue'                  },
+                  { type: :retreat,             name: 'Retreat'               },
+                  { type: :hesitation,          name: 'Hesitation'            },
+                  { type: :mistaken_identity,   name: 'Mistaken identity'     },
+                  { type: :villain_s_monologue, name: "Villain\'s_monologue"  },
+                  { type: :secret_meeting,      name: 'Secret meeting'        },
+                  { type: :personal_stake,      name: 'Personal stake'        },
+                  { type: :second_chance,       name: 'Second chance'         },
+                  { type: :gain_mastery,        name: 'Gain mastery'          },
+                  { type: :alliance,            name: 'Alliance'              },
+                  { type: :betrayal,            name: 'Betrayal'              },
+                  { type: :sabotage,            name: 'Sabotage'              },
+                  { type: :foreshadowing,       name: 'Foreshadowing'         },
+                  { type: :not_what_it_seems,   name: 'Not what it seems'     },
+                  { type: :strange_bedfellows,  name: 'Strange bedfellows'    },
+                  { type: :turnabout,           name: 'Turnabout'             },
+                  { type: :romance,             name: 'Romance'               },
+                  { type: :lie_revealed,        name: 'Lie_revealed'          },
+                  { type: :hazardous_quest,     name: 'Hazardous quest'       },
+                  { type: :puzzle,              name: 'Puzzle'                },
+                  { type: :framed,              name: 'Framed'                },
+                  { type: :obsession,           name: 'Obsession'             },
+                  { type: :back_from_the_dead,  name: 'Back from the dead'    },
+                  { type: :rescuers,            name: 'Rescuers'              },
+                  { type: :vengeance,           name: 'Vengeance'             } ]
 
-CLIMAX  = [ { type: :final_revelation },
-            { type: :final_battle } ]
+CLIMAX  = [ { type: :final_revelation,  name: 'Final revelation' },
+            { type: :final_battle,      name: 'Final battle' } ]
 
-RESOLUTIONS = [ { type: :happy_ending },
-                { type: :villain_is_killed },
-                { type: :villain_surrenders },
-                { type: :villain_escapes },
-                { type: :heroes_captured },
-                { type: :heroes_escape },
-                { type: :ending_cliffhanger },
-                { type: :greater_threat } ]
+RESOLUTIONS = [ { type: :happy_ending,        name: 'Happy ending'        },
+                { type: :villain_is_killed,   name: 'Villains is killed'  },
+                { type: :villain_surrenders,  name: 'Villain surrenders'  },
+                { type: :villain_escapes,     name: 'Villain escapes'     },
+                { type: :heroes_captured,     name: 'Heroes captured'     },
+                { type: :heroes_escape,       name: 'Heroes escape'       },
+                { type: :ending_cliffhanger,  name: 'Ending cliffhanger'  },
+                { type: :greater_threat,      name: 'Greater threat'      } ]
 
 
 
@@ -139,4 +139,5 @@ new_beat_chart << RESOLUTIONS.sample
 
 
 ### 4. PRINT OUT : #############################################################
-new_beat_chart.each { |beat| puts "- #{beat[:type].to_s.split('_').join(' ')}" }
+#new_beat_chart.each { |beat| puts "- #{beat[:type].to_s.split('_').join(' ')}" }
+new_beat_chart.each { |beat| puts "- #{beat[:name]}" }
