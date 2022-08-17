@@ -77,29 +77,66 @@ RESOLUTIONS = [ { type: :happy_ending,        name: 'Happy ending'        },
 
 
 
-### 2. USER INPUT : ############################################################
-options = {}
-OptionParser.new do |opts|
-  opts.banner = "Usage: beat_chart.rb [options]"
+### 2. TOOLS : #################################################################
+def progress(beat_chart,index)
+  ( index + 1 ).to_f / beat_chart.length
+end
 
-  opts.on("-lLENGTH", "--length=LENGTH", "Beat chart length") do |l|
-    options[:length] = l.to_i
+class Array
+  def at_f(f)
+    at( ( f * length ).round )
   end
-end.parse!
-
-if options[:length] < 3
-  puts "Beat chart to short. Main sequence must be longer than 2."
-  exit(0)
 end
 
 
 
 
 
-### 3. BUILDING THE BEAT CHART : ###############################################
+### 3. USER INPUT : ############################################################
 
-## 3.1 HOOK : ##################################################################
-new_beat_chart  = [ HOOKS.sample ]
+### 3.1 Parsing the options:
+options = { context:  'contexts/république_française.rb',   # default values
+            offset:   0 }
+OptionParser.new do |opts|
+  opts.banner = "Usage: beat_chart.rb [options]"
+
+  opts.on("-lLENGTH", "--length=LENGTH", "Beat chart length") do |l|
+    options[:length]  = l.to_i
+  end
+
+  opts.on("-cCONTEXT", "--context=CONTEXT", "The story context as a .rb file") do |c|
+    options[:context] = c
+  end
+
+  opts.on("-oOFFSET", "--offset=OFFSET", "Offset to the progess counter") do |o|
+    options[:oofset]  = o.to_i
+  end
+end.parse!
+
+
+### 3.2 Checking that options are valid:
+if options[:length] < 3
+  puts "Beat chart to short. Main sequence must be longer than 2."
+  exit(0)
+end
+
+if File::exist?('./' + options[:context]) then
+  require './' + options[:context]
+
+else
+  puts "Context file #{options[:context]} does not exist."
+  exit(0)
+
+end
+
+
+
+
+
+### 4. BUILDING THE BEAT CHART : ###############################################
+
+### 4.1 HOOK : #################################################################
+new_beat_chart  = [ HOOKS.sample.dup ]
 
 if new_beat_chart.first[:type] == :cliffhanger
   new_beat_chart.first[:type] = CLIFFHANGERS.sample[:type]
@@ -110,34 +147,46 @@ if new_beat_chart.first[:type] == :development
 end
 
 
-### 3.2 MAIN : #################################################################
-next_beat = case new_beat_chart.first[:best_followed_by]
-            when :cliffhanger then  CLIFFHANGERS
-            when :development then  DEVELOPMENTS
-            when :both        then  [ DEVELOPMENTS, CLIFFHANGERS ].sample
-            end
+### 4.2 MAIN : #################################################################
+next_beat_type  = case new_beat_chart.first[:best_followed_by]
+                  when :cliffhanger then  CLIFFHANGERS
+                  when :development then  DEVELOPMENTS
+                  when :both        then  [ DEVELOPMENTS, CLIFFHANGERS ].sample
+                  end
 
 options[:length].times do |i|
-  new_beat_chart << next_beat.sample
-  next_beat = if next_beat == DEVELOPMENTS  then  CLIFFHANGERS
-              else                                DEVELOPMENTS
-              end
+  new_beat_chart << next_beat_type.sample.dup
+  next_beat_type  = next_beat_type == DEVELOPMENTS ? CLIFFHANGERS : DEVELOPMENTS 
 end
   
 
-### 3.3 CLIMAX : ###############################################################
-new_beat_chart << if next_beat == DEVELOPMENTS then CLIMAX[0]
-                  else                              CLIMAX[1]
-                  end
+### 4.3 CLIMAX : ###############################################################
+new_beat_chart << CLIMAX[next_beat_type == DEVELOPMENTS ? 0 : 1].dup
 
 
-### 3.4 RESOLUTION : ###########################################################
+### 4.4 RESOLUTION : ###########################################################
 new_beat_chart << RESOLUTIONS.sample
 
 
 
 
 
-### 4. PRINT OUT : #############################################################
-#new_beat_chart.each { |beat| puts "- #{beat[:type].to_s.split('_').join(' ')}" }
-new_beat_chart.each { |beat| puts "- #{beat[:name]}" }
+### 5. PLACES : ################################################################
+visited_places  = []
+new_beat_chart.each.with_index do |beat,index|
+  place = PLACES.sample
+  place = PLACES.sample while visited_places.include? place[:type]
+  visited_places << place[:type]
+
+  #puts "#{index} -> #{visited_places}"
+  #puts "#{progress(new_beat_chart, index)} -> #{place}"
+
+  beat[:place]  = DICTIONARY[place[:type]][:en]
+end
+
+
+
+
+
+### 5. PRINT OUT : #############################################################
+new_beat_chart.each { |beat| puts "- #{beat[:name]} at #{beat[:place]}" }
